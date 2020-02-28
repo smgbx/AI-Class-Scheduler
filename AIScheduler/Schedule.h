@@ -16,8 +16,11 @@ private:
 	vector<tuple<int, int, int>> schedule;
 	int checkInstructor();
 	int checkRoomAndTime();
-
+	int checkRoomCapacity();
+	bool atSameTime(int firstClass, int secondClass);
+	bool areAdjacent(int firstClass, int secondClass);
+	bool sameBuilding(int firstClass, int secondClass);
+	int scoreIfInDistantBuildings(int firstClass, int secondClass);
+	string getBuilding(int course);
+	bool sectionsAtDifferentTimes(int firstClass, int secondClass);
 };
-
-//Generate neighbor schedule
-//Randomly swaps certain elements
