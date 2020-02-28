@@ -48,7 +48,6 @@ Schedule::Schedule(vector<tuple<int, int, int>> previousSchedule) {
 		exit(-1);
 	}
 
-	cout << "Changed class: " << randomCourseToChange << " element: " << randomElementToChange << endl;
 	this->schedule = previousSchedule;
 }
 
