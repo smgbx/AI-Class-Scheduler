@@ -52,10 +52,131 @@ Schedule::Schedule(vector<tuple<int, int, int>> previousSchedule) {
 }
 
 void Schedule::printSchedule() {
-	vector<tuple<int, int, int>>::iterator iter;
+	for (int course = 0; course < 12; course++) {
+		int time = get<0>(this->schedule[course]);
+		int room = get<1>(this->schedule[course]);
+		int instructor = get<2>(this->schedule[course]);
 
-	for (iter = this->schedule.begin(); iter < this->schedule.end(); iter++) {
-		cout << get<0>(*iter) << " " << get<1>(*iter) << " " << get<2>(*iter) << endl;
+		string courseDetails = "";
+
+		switch (course) {
+		case 0:
+			courseDetails.append("Course: CS101A ");
+			break;
+		case 1:
+			courseDetails.append("Course: CS101B ");
+			break;
+		case 2:
+			courseDetails.append("Course: CS201A ");
+			break;
+		case 3:
+			courseDetails.append("Course: CS201B ");
+			break;
+		case 4:
+			courseDetails.append("Course: CS191A ");
+			break;
+		case 5:
+			courseDetails.append("Course: CS191B ");
+			break;
+		case 6:
+			courseDetails.append("Course: CS291A ");
+			break;
+		case 7:
+			courseDetails.append("Course: CS291B ");
+			break;
+		case 8:
+			courseDetails.append("Course: CS303 ");
+			break;
+		case 9:
+			courseDetails.append("Course: CS341 ");
+			break;
+		case 10:
+			courseDetails.append("Course: CS449 ");
+			break;
+		case 11:
+			courseDetails.append("Course: CS461 ");
+			break;
+		default:
+			exit(-1);
+		}
+
+		switch (time) {
+		case 0:
+			courseDetails.append("Time: 10:00am ");
+			break;
+		case 1:
+			courseDetails.append("Time: 11:00am ");
+			break;
+		case 2:
+			courseDetails.append("Time: 12:00pm ");
+			break;
+		case 3:
+			courseDetails.append("Time: 1:00pm ");
+			break;
+		case 4:
+			courseDetails.append("Time: 2:00pm ");
+			break;
+		case 5:
+			courseDetails.append("Time: 3:00pm ");
+			break;
+		case 6:
+			courseDetails.append("Time: 4:00pm ");
+			break;
+		default:
+			exit(-1);
+		}
+
+		switch (room) {
+		case 0:
+			courseDetails.append("Location: Haag 301 ");
+			break;
+		case 1:
+			courseDetails.append("Location: Haag 206 ");
+			break;
+		case 2:
+			courseDetails.append("Location: Royall 204 ");
+			break;
+		case 3:
+			courseDetails.append("Location: Katz 209 ");
+			break;
+		case 4:
+			courseDetails.append("Location: Flarsheim 310 ");
+			break;
+		case 5:
+			courseDetails.append("Location: Flarsheim 260 ");
+			break;
+		case 6:
+			courseDetails.append("Location: Bloch 009 ");
+			break;
+		default:
+			exit(-1);
+		}
+
+		switch (instructor) {
+		case 0:
+			courseDetails.append("Instructor: Hare");
+			break;
+		case 1:
+			courseDetails.append("Instructor: Bingham");
+			break;
+		case 2:
+			courseDetails.append("Instructor: Kuhail");
+			break;
+		case 3:
+			courseDetails.append("Instructor: Mitchell");
+			break;
+		case 4:
+			courseDetails.append("Instructor: Rao");
+			break;
+		case 5:
+			courseDetails.append("Instructor: Staff");
+			break;
+		default:
+			exit(-1);
+		}
+
+		cout << courseDetails << endl;
+	
 	}
 }
 
@@ -66,8 +187,9 @@ vector<tuple<int, int, int>> Schedule::getSchedule() {
 int Schedule::getFitness() {
 	int score = 0;
 	score += checkInstructor();
-	//score += checkRoomAndTime();
-	//score += checkRoomCapacity();
+	score += checkRoomAndTime();
+	score += checkRoomCapacity();
+	score += checkPairs();
 	return score;
 }
 
@@ -150,6 +272,95 @@ int Schedule::checkInstructor() {
 	return score;
 }
 
+int Schedule::checkPairs() {
+	int score = 0;
+
+	for (int course = 0; course < 5; course++) {
+
+		switch (course) {
+		case 0:
+			if (sectionsAtDifferentTimes(course, 1)) {
+				score += 5;
+			}
+			if (atSameTime(course, 4) || atSameTime(course, 5)) {
+				score -= 15;
+			}
+			else if (areAdjacent(course, 4) || areAdjacent(course, 5)) {
+				score += 5;
+				if (sameBuilding(course, 4) || sameBuilding(course, 5)) {
+					score += 5;
+				}
+				if (onlyOneInBloch(course, 4) || onlyOneInBloch(course, 5)) {
+					score -= 3;
+				}
+				if (onlyOneInKatz(course, 4) || onlyOneInKatz(course, 5)) {
+					score -= 3;
+				}
+			}
+			break;
+		case 1:
+			if (atSameTime(course, 4) || atSameTime(course, 5)) {
+				score -= 15;
+			}
+			else if (areAdjacent(course, 4) || areAdjacent(course, 5)) {
+				score += 5;
+				if (sameBuilding(course, 4) || sameBuilding(course, 5)) {
+					score += 5;
+				}
+				if (onlyOneInBloch(course, 4) || onlyOneInBloch(course, 5)) {
+					score -= 3;
+				}
+				if (onlyOneInKatz(course, 4) || onlyOneInKatz(course, 5)) {
+					score -= 3;
+				}
+			}
+			break;
+		case 2:
+			if (atSameTime(course, 6) || atSameTime(course, 7)) {
+				score -= 15;
+			}
+			else if (areAdjacent(course, 6) || areAdjacent(course, 7)) {
+				score += 5;
+				if (sameBuilding(course, 6) || sameBuilding(course, 7)) {
+					score += 5;
+				}
+				if (onlyOneInBloch(course, 6) || onlyOneInBloch(course, 7)) {
+					score -= 3;
+				}
+				if (onlyOneInKatz(course, 6) || onlyOneInKatz(course, 7)) {
+					score -= 3;
+				}
+			}
+			break;
+		case 3:
+			if (atSameTime(course, 6) || atSameTime(course, 7)) {
+				score -= 15;
+			}
+			else if (areAdjacent(course, 6) || areAdjacent(course, 7)) {
+				score += 5;
+				if (sameBuilding(course, 6) || sameBuilding(course, 7)) {
+					score += 5;
+				}
+				if (onlyOneInBloch(course, 6) || onlyOneInBloch(course, 7)) {
+					score -= 3;
+				}
+				if (onlyOneInKatz(course, 6) || onlyOneInKatz(course, 7)) {
+					score -= 3;
+				}
+			}
+			break;
+		case 4:
+			if (sectionsAtDifferentTimes(course, 5)) {
+				score += 5;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	return score;
+}
+
 int Schedule::checkRoomAndTime() {
 	/*
 	* If a course is the only course scheduled in that room at that time +5
@@ -179,49 +390,103 @@ int Schedule::checkRoomAndTime() {
 			score += 5;
 		}
 
-		switch (course) {
-		case 0:
-			if (sectionsAtDifferentTimes(course, 1)) {
-				score += 5;
-			}
-			break;
-		case 1:
-			if (atSameTime(course, 4) || atSameTime(course, 5)) {
-				score -= 15;
-			}
-			else if (areAdjacent(course, 4) || areAdjacent(course, 5)) {
-				score += 5;
-				if (sameBuilding(course, 4) || sameBuilding(course, 5)) {
-					score += 5;
-				}
-				score += scoreIfInDistantBuildings(course, 4);
-				score += scoreIfInDistantBuildings(course, 5);
-			}
-			break;
-		case 2:
-		case 3:
-			if (atSameTime(course, 6) || atSameTime(course, 7)) {
-				score -= 15;
-			}
-			else if (areAdjacent(course, 6) || areAdjacent(course, 7)) {
-				score += 5;
-				if (sameBuilding(course, 6) || sameBuilding(course, 7)) {
-					score += 5;
-				}
-				score += scoreIfInDistantBuildings(course, 6);
-				score += scoreIfInDistantBuildings(course, 7);
-			}
-			break;
-		case 4:
-			if (sectionsAtDifferentTimes(course, 5)) {
-				score += 5;
-			}
-			break;
-		default:
-			break;
-		}
+		//	switch (course) {
+		//	case 0:
+		//		if (sectionsAtDifferentTimes(course, 1)) {
+		//			score += 5;
+		//		}
+		//		if (atSameTime(course, 4) || atSameTime(course, 5)) {
+		//			score -= 15;
+		//		}
+		//		else if (areAdjacent(course, 4) || areAdjacent(course, 5)) {
+		//			score += 5;
+		//			if (sameBuilding(course, 4) || sameBuilding(course, 5)) {
+		//				score += 5;
+		//			}
+		//			if (onlyOneInBloch(course, 4) || onlyOneInBloch(course, 5)) {
+		//				score -= 3;
+		//			}
+		//			if (onlyOneInKatz(course, 4) || onlyOneInKatz(course, 5)) {
+		//				score -= 3;
+		//			}
+		//			//score += scoreIfInDistantBuildings(course, 4);
+		//			//score += scoreIfInDistantBuildings(course, 5);
+		//		}
+		//		break;
+		//	case 1:
+		//		if (atSameTime(course, 4) || atSameTime(course, 5)) {
+		//			score -= 15;
+		//		}
+		//		else if (areAdjacent(course, 4) || areAdjacent(course, 5)) {
+		//			score += 5;
+		//			if (sameBuilding(course, 4) || sameBuilding(course, 5)) {
+		//				score += 5;
+		//			}
+		//			if (onlyOneInBloch(course, 4) || onlyOneInBloch(course, 5)) {
+		//				score -= 3;
+		//			}
+		//			if (onlyOneInKatz(course, 4) || onlyOneInKatz(course, 5)) {
+		//				score -= 3;
+		//			}
+		//			//score += scoreIfInDistantBuildings(course, 4);
+		//			//score += scoreIfInDistantBuildings(course, 5);
+		//		}
+		//		break;
+		//	case 2:
+		//		if (atSameTime(course, 6) || atSameTime(course, 7)) {
+		//			score -= 15;
+		//		}
+		//		else if (areAdjacent(course, 6) || areAdjacent(course, 7)) {
+		//			score += 5;
+		//			if (sameBuilding(course, 6) || sameBuilding(course, 7)) {
+		//				score += 5;
+		//			}
+		//			if (onlyOneInBloch(course, 6) || onlyOneInBloch(course, 7)) {
+		//				score -= 3;
+		//			}
+		//			if (onlyOneInKatz(course, 6) || onlyOneInKatz(course, 7)) {
+		//				score -= 3;
+		//			}
+		//			//score += scoreIfInDistantBuildings(course, 6);
+		//			//score += scoreIfInDistantBuildings(course, 7);
+		//		}
+		//		break;
+		//	case 3:
+		//		if (atSameTime(course, 6) || atSameTime(course, 7)) {
+		//			score -= 15;
+		//		}
+		//		else if (areAdjacent(course, 6) || areAdjacent(course, 7)) {
+		//			score += 5;
+		//			if (sameBuilding(course, 6) || sameBuilding(course, 7)) {
+		//				score += 5;
+		//			}
+		//			if (onlyOneInBloch(course, 6) || onlyOneInBloch(course, 7)) {
+		//				score -= 3;
+		//			}
+		//			if (onlyOneInKatz(course, 6) || onlyOneInKatz(course, 7)) {
+		//				score -= 3;
+		//			}
+		//			//score += scoreIfInDistantBuildings(course, 6);
+		//			//score += scoreIfInDistantBuildings(course, 7);
+		//		}
+		//		break;
+		//	case 4:
+		//		if (sectionsAtDifferentTimes(course, 5)) {
+		//			score += 5;
+		//		}
+		//		break;
+		//	case 5:
+		//	case 6:
+		//	case 7:
+		//	case 8:
+		//	case 9:
+		//	case 10:
+		//	case 11:
+		//		break;
+		//	default:
+		//		exit(-1);
+		//	}
 	}
-
 	return score;
 }
 
@@ -351,20 +616,29 @@ bool Schedule::sameBuilding(int firstClass, int secondClass) {
 	}
 }
 
-int Schedule::scoreIfInDistantBuildings(int firstClass, int secondClass) {
+bool Schedule::onlyOneInKatz(int firstClass, int secondClass) {
 	string firstLocation = getBuilding(firstClass);
 	string secondLocation = getBuilding(secondClass);
 
-	int score = 0;
-	
 	if ((firstLocation == "Katz" && secondLocation != "Katz") || (firstLocation != "Katz" && secondLocation == "Katz")) {
-		score -= 3;
+		return true;
 	}
-	if ((firstLocation == "Bloch" && secondLocation != "Bloch") || (firstLocation != "Bloch" && secondLocation == "Bloch")) {
-		score -= 3;
+	else {
+		return false;
 	}
 
-	return score;
+}
+
+bool Schedule::onlyOneInBloch(int firstClass, int secondClass) {
+	string firstLocation = getBuilding(firstClass);
+	string secondLocation = getBuilding(secondClass);
+
+	if ((firstLocation == "Bloch" && secondLocation != "Bloch") || (firstLocation != "Bloch" && secondLocation == "Bloch")) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 bool Schedule::sectionsAtDifferentTimes(int firstClass, int secondClass) {
@@ -380,7 +654,9 @@ bool Schedule::sectionsAtDifferentTimes(int firstClass, int secondClass) {
 }
 
 string Schedule::getBuilding(int course) {
-	switch (course) {
+	int room = get<1>(this->schedule[course]);
+
+	switch (room) {
 	case 0:
 	case 1:
 		return "Haag";

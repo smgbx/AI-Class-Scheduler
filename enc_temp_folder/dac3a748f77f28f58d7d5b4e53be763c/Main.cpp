@@ -3,8 +3,7 @@
 * CS 461 - Intro to Artificial Intelligence
 * 1 March 2020
 *
-* A program designed to find an acceptably optimal schedule for the 
-* UMKC CS department using simulated annealing. 
+* A program designed to find an acceptably optimal schedule using simulated annealing. 
 */
 
 #include "Schedule.h"
